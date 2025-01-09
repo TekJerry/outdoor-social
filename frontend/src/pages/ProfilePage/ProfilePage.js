@@ -44,7 +44,7 @@ export default function ProfilePage() {
   if (loading) return <p>Loading...</p>;
   return (<div>
     <div>
-      <h1>Profile</h1>
+      <h1>Profile Details</h1>
       <p>Name: {user.name}</p>
       <p>Email: {user.email}</p>
       <p>Location: {user.location || "Not provided"}</p>
