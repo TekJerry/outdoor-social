@@ -2,24 +2,28 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Post from "../../components/Post/Post";
 import CreatePostForm from "../../components/CreatePostForm/CreatePostForm";
+import { Box, VStack, Spinner, Text } from "@chakra-ui/react";
 
 export default function FeedPage() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
-        try {
-            const response = await axios.get("http://localhost:5000/api/posts", {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            });
-            setPosts(response.data); // Update state with posts
-          } catch (error) {
-            console.error("Error fetching posts:", error);
-          }
-        };
-      
+      try {
+        const response = await axios.get("http://localhost:5000/api/posts", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        setPosts(response.data); // Update state with posts
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetch
+      }
+    };
+
     fetchPosts();
   }, []);
 
@@ -69,20 +73,44 @@ export default function FeedPage() {
     setPosts((prevPosts) => [newPost, ...prevPosts]); // Add new post to the feed
   };
 
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" h="100vh">
+        <Spinner size="xl" color="#385802" />
+      </Box>
+    );
+  }
+
   return (
-    <div>
-      <h1>Feed</h1>
-      <CreatePostForm onPostCreated={handlePostCreated} />
-      <div>
-        {posts.map((post) => (
-          <Post
-            key={post._id}
-            post={post}
-            onLike={handleLike}
-            onComment={handleComment}
-          />
-        ))}
-      </div>
-    </div>
+    <Box bg="#f7f7f7" minH="100vh" py={10}>
+      <Box
+        maxW="800px"
+        mx="auto"
+        bg="white"
+        p={5}
+        borderRadius="md"
+        boxShadow="lg"
+      >
+        <Text fontSize="2xl" fontWeight="bold" color="#385802" mb={5}>
+          Create a Post
+        </Text>
+        <CreatePostForm onPostCreated={handlePostCreated} />
+      </Box>
+
+      <VStack spacing={6} mt={8} maxW="800px" mx="auto">
+        {posts.length === 0 ? (
+          <Text>No posts available. Start following others to see posts!</Text>
+        ) : (
+          posts.map((post) => (
+            <Post
+              key={post._id}
+              post={post}
+              onLike={handleLike}
+              onComment={handleComment}
+            />
+          ))
+        )}
+      </VStack>
+    </Box>
   );
 }

@@ -71,4 +71,17 @@ router.get("/profile", authMiddleware, async (req, res) => {
     }
   });
 
+  // In-memory blacklist for simplicity (replace with a database in production)
+let tokenBlacklist = [];
+
+router.post('/logout', (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (token) {
+    tokenBlacklist.push(token); // Add token to blacklist
+    res.status(200).json({ message: "Logged out successfully." });
+  } else {
+    res.status(400).json({ message: "No token provided." });
+  }
+});
+
 module.exports = router;
