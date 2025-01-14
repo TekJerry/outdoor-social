@@ -17,6 +17,7 @@ export default function HomePage() {
         password,
       });
       localStorage.setItem("token", response.data.token); // Store the token
+      localStorage.setItem("email", response.data.email);
       navigate("/feed"); // Redirect to feed
     } catch (err) {
       setError(err.response?.data?.message || "Login failed. Please try again.");
