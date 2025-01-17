@@ -40,34 +40,35 @@ router.get("/friends", authMiddleware, async (req, res) => {
 
 // Send a friend request
 router.post("/friend-request", authMiddleware, async (req, res) => {
-    const { to } = req.body; // ID of the user to send the request to
-  
-    try {
-      const recipient = await User.findById(to);
-  
-      if (!recipient) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      // Check if the request already exists
-      const existingRequest = recipient.friendRequests.find(
-        (request) => request.from.toString() === req.user.id
-      );
-  
-      if (existingRequest) {
-        return res.status(400).json({ message: "Friend request already sent" });
-      }
-  
-      // Add the friend request
-      recipient.friendRequests.push({ from: req.user.id, status: "pending" });
-      await recipient.save();
-  
-      res.json({ message: "Friend request sent" });
-    } catch (error) {
-      console.error("Error sending friend request:", error);
-      res.status(500).json({ message: "Error sending friend request" });
+  const { to } = req.body;
+
+  try {
+    const currentUser = await User.findById(req.user.id);
+    const targetUser = await User.findById(to);
+
+    if (!targetUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
+
+    // Check if the user is already a friend
+    const isAlreadyFriend = currentUser.friends.includes(to);
+    if (isAlreadyFriend) {
+      return res.status(200).json({ message: "Already a Friend" });
+    }
+
+    // Add friend for both users
+    currentUser.friends.push(to);
+    targetUser.friends.push(req.user.id);
+
+    await currentUser.save();
+    await targetUser.save();
+
+    res.status(200).json({ message: "Friend added successfully" });
+  } catch (error) {
+    console.error("Error adding friend:", error);
+    res.status(500).json({ message: "Error adding friend", error });
+  }
+});
 
   // Get incoming friend requests
 router.get("/friend-requests", authMiddleware, async (req, res) => {
@@ -147,7 +148,29 @@ router.get("/friend-requests", authMiddleware, async (req, res) => {
     }
   });
   
-  
+  // Get Public User Profile
+router.get("/:userId", authMiddleware, async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId).select("name location friends"); // Exclude sensitive data
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const friends = await User.find({ _id: { $in: user.friends } }).select(
+      "name"
+    ); // Fetch friends' details
+
+    res.status(200).json({ user, friends });
+  } catch (error) {
+    console.error("Error fetching public user profile:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching public user profile", error });
+  }
+});
+
   
 
 module.exports = router;

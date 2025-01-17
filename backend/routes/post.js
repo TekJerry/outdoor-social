@@ -90,3 +90,17 @@ router.post("/:id/comment", authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+
+router.get("/myposts", authMiddleware, async (req, res) => {
+  try {
+    // Find posts created by the logged-in user
+    const posts = await Post.find({ user: req.user.id })
+      .populate("user", "name email") // Populate user's name and email
+      .sort({ createdAt: -1 }); // Sort posts by creation date (most recent first)
+
+    res.status(200).json(posts); // Return the user's posts
+  } catch (error) {
+    console.error("Error fetching user's posts:", error);
+    res.status(500).json({ message: "Error fetching user's posts", error });
+  }
+});

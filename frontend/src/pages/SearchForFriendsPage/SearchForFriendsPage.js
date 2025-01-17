@@ -1,24 +1,24 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
+  VStack,
   Input,
   Button,
-  VStack,
-  HStack,
   Text,
-  Spinner,
-  useToast,
+  Avatar,
+  HStack,
 } from "@chakra-ui/react";
 
 export default function SearchForFriendsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const toast = useToast();
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return; // Don't search for empty queries
+    if (!searchQuery.trim()) return;
 
     setLoading(true);
 
@@ -31,25 +31,19 @@ export default function SearchForFriendsPage() {
           },
         }
       );
-      setSearchResults(response.data); // Update search results
+      setSearchResults(response.data);
     } catch (error) {
       console.error("Error searching for users:", error);
-      toast({
-        title: "Search failed",
-        description: "Failed to search for users. Please try again.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      alert("Failed to search for users. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSendFriendRequest = async (userId) => {
+  const handleFriendAction = async (userId) => {
     try {
-      await axios.post(
-        `http://localhost:5000/api/users/friend-request`,
+      const response = await axios.post(
+        "http://localhost:5000/api/users/friend-request",
         { to: userId },
         {
           headers: {
@@ -57,81 +51,61 @@ export default function SearchForFriendsPage() {
           },
         }
       );
-      toast({
-        title: "Friend request sent",
-        description: "Your friend request has been sent successfully.",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
+
+      if (response.data.message === "Already a Friend") {
+        navigate(`/user-profile/${userId}`); // Navigate to their public profile
+      } else {
+        alert(response.data.message || "Friend added successfully!");
+      }
     } catch (error) {
-      console.error("Error sending friend request:", error);
-      toast({
-        title: "Failed to send request",
-        description: "Could not send the friend request. Please try again.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      console.error("Error adding friend:", error);
+      alert("Failed to send friend request.");
     }
   };
 
   return (
-    <Box maxW="600px" mx="auto" py={10} px={5}>
-      <Text fontSize="2xl" fontWeight="bold" mb={5} textAlign="center" color="#385802">
+    <Box p={4}>
+      <Text fontSize="2xl" mb={4}>
         Search for Friends
       </Text>
       <VStack spacing={4}>
-        {/* Search Input */}
-        <HStack w="full">
-          <Input
-            placeholder="Search by name or email"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            bg="gray.50"
-            flex="1"
-          />
-          <Button
-            colorScheme="green"
-            onClick={handleSearch}
-            isLoading={loading}
-            disabled={!searchQuery.trim()}
+        <Input
+          placeholder="Search by name or email"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <Button
+          onClick={handleSearch}
+          isLoading={loading}
+          loadingText="Searching..."
+          colorScheme="green"
+        >
+          Search
+        </Button>
+      </VStack>
+      <VStack spacing={4} mt={6}>
+        {searchResults.map((user) => (
+          <HStack
+            key={user._id}
+            w="100%"
+            p={4}
+            bg="gray.100"
+            rounded="md"
+            justifyContent="space-between"
           >
-            Search
-          </Button>
-        </HStack>
-
-        {/* Search Results */}
-        <VStack spacing={4} w="full">
-          {loading ? (
-            <Spinner color="#385802" />
-          ) : searchResults.length > 0 ? (
-            searchResults.map((user) => (
-              <HStack
-                key={user._id}
-                w="full"
-                p={3}
-                bg="white"
-                borderRadius="md"
-                shadow="md"
-                justifyContent="space-between"
-              >
-                <Text>
-                  {user.name} ({user.email})
-                </Text>
-                <Button
-                  size="sm"
-                  colorScheme="green"
-                  onClick={() => handleSendFriendRequest(user._id)}
-                >
-                  Add Friend
-                </Button>
-              </HStack>
-            ))
-          ) : (
-            <Text color="gray.500">No results found. Try a different search term.</Text>
-          )}
-        </VStack>
+            <HStack>
+              <Avatar name={user.name} />
+              <Text>{user.name}</Text>
+            </HStack>
+            <Button
+              onClick={() => handleFriendAction(user._id)}
+              colorScheme="green"
+              variant="outline"
+            >
+              Add Friend
+            </Button>
+          </HStack>
+        ))}
       </VStack>
     </Box>
   );

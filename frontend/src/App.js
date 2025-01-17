@@ -11,6 +11,7 @@ import PreferenceCenterPage from "./pages/PreferenceCenterPage/PreferenceCenterP
 import FeedPage from "./pages/FeedPage/FeedPage";
 import SearchForFriendsPage from "./pages/SearchForFriendsPage/SearchForFriendsPage";
 import FriendRequestsPage from "./pages/FriendRequestsPage/FriendRequestsPage";
+import UserProfilePage from "./pages/UserProfilePage/UserProfilePage";
 import { Box, Button, Text, Input } from "@chakra-ui/react";
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
           <Route path="/feed" element={<FeedPage />} />
           <Route path="/search-for-friends" element={<SearchForFriendsPage />} />
           <Route path="/friend-requests" element={<FriendRequestsPage />} />
+          <Route path="/user-profile/:userId" element={<UserProfilePage />} />
         </Routes>
       </main>
     </div>

@@ -22,8 +22,11 @@ app.get("/api", (req, res) => {
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/posts", require("./routes/post"));
 
+
 const userRoutes = require("./routes/user"); // Adjust the path as needed
 app.use("/api/users", userRoutes);
+
+
 
 
 // Start the server
