@@ -26,6 +26,14 @@ app.use("/api/posts", require("./routes/post"));
 const userRoutes = require("./routes/user"); // Adjust the path as needed
 app.use("/api/users", userRoutes);
 
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "https://outdoor-social.netlify.app/", // Replace with your actual frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 
 
