@@ -6,11 +6,13 @@ require("dotenv").config();
 const app = express();
 
 // Middleware
-app.use(cors({
-  origin: "https://outdoor-social.netlify.app/", // Replace with your actual frontend URL
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "https://outdoor-social.netlify.app", // Replace with your Netlify URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // If you're using cookies
+  })
+);
 app.use(express.json());
 
 // Connect to MongoDB
