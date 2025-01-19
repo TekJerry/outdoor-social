@@ -22,7 +22,7 @@ const App = () => {
 
   const [message, setMessage] = useState("");
   useEffect(() => {
-    fetch("/api")
+    fetch("https://outdoor-social.onrender.com/api")
       .then((response) => response.text())
       .then((data) => setMessage(data))
       .catch((error) => console.error(error));
