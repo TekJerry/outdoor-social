@@ -11,7 +11,7 @@ export default function FeedPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/posts", {
+        const response = await axios.get("https://outdoor-social.onrender.com/api/posts", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -30,7 +30,7 @@ export default function FeedPage() {
   const handleLike = async (postId) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/posts/${postId}/like`,
+        `https://outdoor-social.onrender.com/api/posts/${postId}/like`,
         {},
         {
           headers: {
@@ -51,7 +51,7 @@ export default function FeedPage() {
   const handleComment = async (postId, comment) => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/posts/${postId}/comment`,
+        `https://outdoor-social.onrender.com/api/posts/${postId}/comment`,
         { content: comment },
         {
           headers: {

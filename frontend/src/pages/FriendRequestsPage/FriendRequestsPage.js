@@ -8,7 +8,7 @@ export default function FriendRequestsPage() {
   useEffect(() => {
     const fetchFriendRequests = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/friend-requests", {
+        const response = await axios.get("https://outdoor-social.onrender.com/api/users/friend-requests", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -28,7 +28,7 @@ export default function FriendRequestsPage() {
   const handleAccept = async (requestId) => {
     try {
       await axios.post(
-        "http://localhost:5000/api/users/friend-requests/accept",
+        "https://outdoor-social.onrender.com/api/users/friend-requests/accept",
         { requestId },
         {
           headers: {
@@ -47,7 +47,7 @@ export default function FriendRequestsPage() {
   const handleReject = async (requestId) => {
     try {
       await axios.post(
-        "http://localhost:5000/api/users/friend-requests/reject",
+        "https://outdoor-social.onrender.com/api/users/friend-requests/reject",
         { requestId },
         {
           headers: {

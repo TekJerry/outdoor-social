@@ -24,7 +24,7 @@ export default function SearchForFriendsPage() {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/users/search?query=${searchQuery}`,
+        `https://outdoor-social.onrender.com/api/users/search?query=${searchQuery}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -43,7 +43,7 @@ export default function SearchForFriendsPage() {
   const handleFriendAction = async (userId) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/users/friend-request",
+        "https://outdoor-social.onrender.com/api/users/friend-request",
         { to: userId },
         {
           headers: {

@@ -29,7 +29,7 @@ export default function PreferenceCenterPage() {
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/auth/preferences", {
+        const response = await axios.get("https://outdoor-social.onrender.com/api/auth/preferences", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -68,7 +68,7 @@ export default function PreferenceCenterPage() {
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/auth/preferences",
+        "https://outdoor-social.onrender.com/api/auth/preferences",
         preferences,
         {
           headers: {

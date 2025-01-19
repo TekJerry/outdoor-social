@@ -33,7 +33,7 @@ export default function CreatePostForm({ onPostCreated }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/posts",
+        "https://outdoor-social.onrender.com/api/posts",
         {
           content,
           hashtags: hashtags.split(",").map((tag) => tag.trim()), // Parse hashtags

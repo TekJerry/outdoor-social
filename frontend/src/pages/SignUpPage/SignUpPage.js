@@ -25,7 +25,7 @@ export default function SignUpPage() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/signup",
+        "https://outdoor-social.onrender.com/api/auth/signup",
         formData
       );
       toast({

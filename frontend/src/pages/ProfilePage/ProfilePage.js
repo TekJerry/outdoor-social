@@ -13,7 +13,7 @@ export default function ProfilePage() {
     const fetchProfileAndFriends = async () => {
       try {
         const profileResponse = await axios.get(
-          "http://localhost:5000/api/auth/profile",
+          "https://outdoor-social.onrender.com/api/auth/profile",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -23,7 +23,7 @@ export default function ProfilePage() {
         setUser(profileResponse.data);
 
         const friendsResponse = await axios.get(
-          "http://localhost:5000/api/users/friends",
+          "https://outdoor-social.onrender.com/api/users/friends",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -33,7 +33,7 @@ export default function ProfilePage() {
         setFriends(friendsResponse.data);
 
         const postsResponse = await axios.get(
-          "http://localhost:5000/api/posts/myposts",
+          "https://outdoor-social.onrender.com/api/posts/myposts",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
