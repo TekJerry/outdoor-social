@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Post from "../../components/Post/Post";
-import {
-  Box,
-  Flex,
-  VStack,
-  Heading,
-  Text,
-  Avatar,
-  Divider,
-} from "@chakra-ui/react";
+import { Box, Flex, VStack, Heading, Text, Avatar, Divider } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -18,6 +10,19 @@ export default function ProfilePage() {
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const handleFriendClick = async (friendId) => {
+    try {
+      await axios.get(`https://outdoor-social.onrender.com/api/users/${friendId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      navigate(`/user_profile/${friendId}`);
+    } catch (error) {
+      console.error("Error fetching friend data:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchProfileAndFriends = async () => {
@@ -76,10 +81,8 @@ export default function ProfilePage() {
       margin="0 auto"
       alignItems="flex-start"
     >
-      {/* Left Column (Blank for now) */}
       <Box flex="1" width="25%" />
 
-      {/* Middle Column (Profile & Posts) */}
       <Box flex="2" width="50%" bg="white" shadow="md" rounded="lg" p={6}>
         <Box mb={6}>
           <Heading size="lg" mb={4} textAlign="center">
@@ -112,7 +115,6 @@ export default function ProfilePage() {
         </Box>
       </Box>
 
-      {/* Right Column (Friends List) */}
       <Box
         flex="1"
         width="25%"
@@ -138,10 +140,8 @@ export default function ProfilePage() {
                 key={friend._id}
                 align="center"
                 gap={4}
-                _hover={{ bg: "gray.100", cursor: "pointer" }}
-                p={2}
-                rounded="md"
-                onClick={() => navigate(`/user_profile/${friend._id}`)}
+                onClick={() => handleFriendClick(friend._id)}
+                style={{ cursor: "pointer" }}
               >
                 <Avatar name={friend.name} />
                 <Text fontWeight="medium">{friend.name}</Text>
