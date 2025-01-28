@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Post from "../../components/Post/Post";
-import { Box, Flex, VStack, Heading, Text, Avatar, Divider } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  VStack,
+  Heading,
+  Text,
+  Avatar,
+  Divider,
+} from "@chakra-ui/react";
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [friends, setFriends] = useState([]);
   const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfileAndFriends = async () => {
@@ -124,7 +134,15 @@ export default function ProfilePage() {
         ) : (
           <VStack spacing={4} align="stretch">
             {friends.map((friend) => (
-              <Flex key={friend._id} align="center" gap={4}>
+              <Flex
+                key={friend._id}
+                align="center"
+                gap={4}
+                _hover={{ bg: "gray.100", cursor: "pointer" }}
+                p={2}
+                rounded="md"
+                onClick={() => navigate(`/user_profile/${friend._id}`)}
+              >
                 <Avatar name={friend.name} />
                 <Text fontWeight="medium">{friend.name}</Text>
               </Flex>
