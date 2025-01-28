@@ -1,30 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  Box,
-  VStack,
-  Heading,
-  Avatar,
-  Text,
-  HStack,
-  Divider,
-  Button,
-  SimpleGrid,
-} from "@chakra-ui/react";
+import { Box, VStack, Heading, Avatar, Text, HStack, Flex } from "@chakra-ui/react";
 
 export default function UserProfilePage() {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [friends, setFriends] = useState([]);
-  const [posts, setPosts] = useState([]);
+  const [userPosts, setUserPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userResponse = await axios.get(
+        setLoading(true);
+        const response = await axios.get(
           `https://outdoor-social.onrender.com/api/users/${userId}`,
           {
             headers: {
@@ -32,9 +23,10 @@ export default function UserProfilePage() {
             },
           }
         );
-        setUser(userResponse.data.user);
-        setFriends(userResponse.data.friends);
+        setUser(response.data.user);
+        setFriends(response.data.friends);
 
+        // Fetch the user's posts
         const postsResponse = await axios.get(
           `https://outdoor-social.onrender.com/api/posts/user/${userId}`,
           {
@@ -43,7 +35,7 @@ export default function UserProfilePage() {
             },
           }
         );
-        setPosts(postsResponse.data);
+        setUserPosts(postsResponse.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
         alert("Failed to fetch user profile.");
@@ -53,97 +45,100 @@ export default function UserProfilePage() {
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [userId]); // Add userId as a dependency to re-run the effect when it changes
 
-  if (loading) return <Text>Loading...</Text>;
+  if (loading) return <Text textAlign="center">Loading...</Text>;
 
   return (
-    <Box maxW="85%" mx="auto" p={5}>
-      {/* Main layout with three columns */}
-      <SimpleGrid columns={[1, null, 3]} spacing={10}>
-        {/* Left Column: Placeholder for future use */}
-        <Box></Box>
+    <Flex
+      className="p-4 mx-auto"
+      gap={6}
+      justifyContent="center"
+      maxWidth="85%"
+      margin="0 auto"
+      alignItems="flex-start"
+    >
+      {/* Left Column (Blank for now) */}
+      <Box flex="1" width="25%" />
 
-        {/* Middle Column: User Info and Posts */}
-        <Box>
-          <VStack spacing={4} bg="gray.100" p={5} borderRadius="md" shadow="md">
-            <Avatar size="xl" name={user.name} />
-            <Heading>{user.name}</Heading>
-            <Text>{user.location || "Location not provided"}</Text>
-          </VStack>
-          <Divider my={6} />
-          <Heading size="md" mb={4}>
-            Posts
+      {/* Middle Column (User Profile & Posts) */}
+      <Box flex="2" width="50%" bg="white" shadow="md" rounded="lg" p={6}>
+        <Box mb={6}>
+          <Heading size="lg" mb={4} textAlign="center">
+            {user.name}'s Profile
           </Heading>
-          <VStack spacing={4}>
-            {posts.length > 0 ? (
-              posts.map((post) => (
+          <Text textAlign="center" fontSize="lg" fontWeight="medium">
+            <strong>Location:</strong> {user.location || "Not provided"}
+          </Text>
+        </Box>
+
+        <Box>
+          {userPosts.length === 0 ? (
+            <Text textAlign="center">No posts yet.</Text>
+          ) : (
+            <VStack spacing={4}>
+              {userPosts.map((post) => (
                 <Box
                   key={post._id}
-                  bg="white"
-                  p={5}
-                  borderRadius="md"
+                  bg="gray.50"
+                  p={4}
                   shadow="sm"
-                  w="100%"
+                  rounded="lg"
+                  width="100%"
                 >
                   <Text fontWeight="bold">{post.content}</Text>
                   {post.photo && (
-                    <Box mt={3}>
-                      <img
-                        src={post.photo}
-                        alt="Post"
-                        style={{
-                          width: "100%",
-                          maxHeight: "400px",
-                          objectFit: "cover",
-                          borderRadius: "8px",
-                        }}
-                      />
-                    </Box>
+                    <img
+                      src={post.photo}
+                      alt="Post"
+                      style={{ width: "100%", borderRadius: "8px", marginTop: "8px" }}
+                    />
                   )}
-                  <HStack mt={3} justifyContent="space-between">
-                    <Text fontSize="sm">
-                      {post.hashtags.map((tag) => `#${tag} `)}
-                    </Text>
-                    <Text fontSize="sm">
-                      {post.likes.length} {post.likes.length === 1 ? "like" : "likes"}
-                    </Text>
-                  </HStack>
                 </Box>
-              ))
-            ) : (
-              <Text>No posts available</Text>
-            )}
-          </VStack>
+              ))}
+            </VStack>
+          )}
         </Box>
+      </Box>
 
-        {/* Right Column: Friends */}
-        <Box>
-          <Heading size="md" mb={4}>
-            Friends
-          </Heading>
-          <VStack spacing={4}>
+      {/* Right Column (Friends List) */}
+      <Box
+        flex="1"
+        width="25%"
+        bg="white"
+        shadow="md"
+        rounded="lg"
+        p={6}
+        h="fit-content"
+        maxH="80vh"
+        overflowY="auto"
+        position="sticky"
+        top="20px"
+      >
+        <Heading size="md" mb={4} textAlign="center">
+          Friends
+        </Heading>
+        {friends.length === 0 ? (
+          <Text textAlign="center">No friends yet.</Text>
+        ) : (
+          <VStack spacing={4} align="stretch">
             {friends.map((friend) => (
-              <HStack
+              <Flex
                 key={friend._id}
-                w="100%"
-                justifyContent="space-between"
-                bg="gray.50"
-                p={3}
-                borderRadius="md"
-                shadow="sm"
+                align="center"
+                gap={4}
                 _hover={{ bg: "gray.100", cursor: "pointer" }}
+                p={2}
+                rounded="md"
                 onClick={() => navigate(`/user_profile/${friend._id}`)}
               >
-                <HStack>
-                  <Avatar name={friend.name} />
-                  <Text fontWeight="bold">{friend.name}</Text>
-                </HStack>
-              </HStack>
+                <Avatar name={friend.name} />
+                <Text fontWeight="medium">{friend.name}</Text>
+              </Flex>
             ))}
           </VStack>
-        </Box>
-      </SimpleGrid>
-    </Box>
+        )}
+      </Box>
+    </Flex>
   );
 }
