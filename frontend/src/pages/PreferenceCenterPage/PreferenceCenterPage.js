@@ -1,4 +1,16 @@
 import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Heading,
+  VStack,
+  Input,
+  Checkbox,
+  Select,
+  Button,
+  HStack,
+  Divider,
+  Text,
+} from "@chakra-ui/react";
 import axios from "axios";
 
 export default function PreferenceCenterPage() {
@@ -29,11 +41,14 @@ export default function PreferenceCenterPage() {
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const response = await axios.get("https://outdoor-social.onrender.com/api/auth/preferences", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axios.get(
+          "https://outdoor-social.onrender.com/api/auth/preferences",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setPreferences(response.data || {});
         setLoading(false);
       } catch (error) {
@@ -67,7 +82,7 @@ export default function PreferenceCenterPage() {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         "https://outdoor-social.onrender.com/api/auth/preferences",
         preferences,
         {
@@ -82,209 +97,118 @@ export default function PreferenceCenterPage() {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Box textAlign="center">Loading...</Box>;
 
   return (
-    <div>
-      <h1>Preference Center</h1>
-      <label>
-        Name:
-        <input
-          type="text"
+    <Box maxW="800px" mx="auto" p={5}>
+      <Heading textAlign="center" mb={6}>
+        Preference Center
+      </Heading>
+      <VStack spacing={4} align="stretch" bg="gray.100" p={5} borderRadius="md" shadow="md">
+        <Text fontWeight="bold" fontSize="lg">
+          Personal Details
+        </Text>
+        <Divider />
+        <Input
+          placeholder="Name"
           name="name"
           value={preferences.name}
           onChange={handleChange}
         />
-      </label>
-      <label>
-        Date of Birth:
-        <input
+        <Input
           type="date"
+          placeholder="Date of Birth"
           name="dob"
           value={preferences.dob}
           onChange={handleChange}
         />
-      </label>
-      <label>
-        Location:
-        <input
-          type="text"
+        <Input
+          placeholder="Location"
           name="location"
           value={preferences.location}
           onChange={handleChange}
         />
-      </label>
-      <label>
-        Favorite Lake:
-        <input
-          type="text"
+        <Input
+          placeholder="Favorite Lake"
           name="favoriteLake"
           value={preferences.favoriteLake}
           onChange={handleChange}
         />
-      </label>
-      <label>
-        Favorite Hunting Reservoir:
-        <input
-          type="text"
+        <Input
+          placeholder="Favorite Hunting Reservoir"
           name="favoriteHuntingReservoir"
           value={preferences.favoriteHuntingReservoir}
           onChange={handleChange}
         />
-      </label>
-      <label>
-        Favorite Hunting Lodge:
-        <input
-          type="text"
+        <Input
+          placeholder="Favorite Hunting Lodge"
           name="favoriteHuntingLodge"
           value={preferences.favoriteHuntingLodge}
           onChange={handleChange}
         />
-      </label>
-      <label>
-        Favorite Campsites:
-        <input
-          type="text"
+        <Input
+          placeholder="Favorite Campsites"
           name="favoriteCampsites"
           value={preferences.favoriteCampsites}
           onChange={handleChange}
         />
-      </label>
-      <h3>Interests</h3>
-      <label>
-        <input
-          type="checkbox"
-          name="interests"
-          value="Hunting"
-          checked={preferences.interests.includes("Hunting")}
-          onChange={handleChange}
-        />
-        Hunting
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="interests"
-          value="Fishing"
-          checked={preferences.interests.includes("Fishing")}
-          onChange={handleChange}
-        />
-        Fishing
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="interests"
-          value="Camping"
-          checked={preferences.interests.includes("Camping")}
-          onChange={handleChange}
-        />
-        Camping
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="interests"
-          value="Hiking"
-          checked={preferences.interests.includes("Hiking")}
-          onChange={handleChange}
-        />
-        Hiking
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          name="interests"
-          value="Kayaking"
-          checked={preferences.interests.includes("Kayaking")}
-          onChange={handleChange}
-        />
-        Kayaking
-      </label>
-      <h3>Skill Levels</h3>
-      <label>
-        Hunting:
-        <select
-          name="hunting"
-          value={preferences.skillLevels.hunting}
-          onChange={(e) =>
-            setPreferences((prev) => ({
-              ...prev,
-              skillLevels: { ...prev.skillLevels, hunting: e.target.value },
-            }))
-          }
-        >
-          <option value="">Select Skill Level</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
-      </label>
-      <label>
-        Fishing:
-        <select
-          name="fishing"
-          value={preferences.skillLevels.fishing}
-          onChange={(e) =>
-            setPreferences((prev) => ({
-              ...prev,
-              skillLevels: { ...prev.skillLevels, fishing: e.target.value },
-            }))
-          }
-        >
-          <option value="">Select Skill Level</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
-      </label>
-      <label>
-        Camping:
-        <select
-          name="camping"
-          value={preferences.skillLevels.camping}
-          onChange={(e) =>
-            setPreferences((prev) => ({
-              ...prev,
-              skillLevels: { ...prev.skillLevels, camping: e.target.value },
-            }))
-          }
-        >
-          <option value="">Select Skill Level</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
-        </select>
-      </label>
-      <h3>Notifications</h3>
-      <label>
-        Special Events:
-        <input
-          type="checkbox"
-          name="specialEvents"
-          checked={preferences.notifications.specialEvents}
-          onChange={handleChange}
-        />
-      </label>
-      <label>
-        Discounts:
-        <input
-          type="checkbox"
-          name="discounts"
-          checked={preferences.notifications.discounts}
-          onChange={handleChange}
-        />
-      </label>
-      <label>
-        Updates:
-        <input
-          type="checkbox"
-          name="updates"
-          checked={preferences.notifications.updates}
-          onChange={handleChange}
-        />
-      </label>
-      <button onClick={handleSubmit}>Save Preferences</button>
-    </div>
+        <Text fontWeight="bold" fontSize="lg" mt={4}>
+          Interests
+        </Text>
+        <Divider />
+        <HStack wrap="wrap" spacing={4}>
+          {["Hunting", "Fishing", "Camping", "Hiking", "Kayaking"].map((interest) => (
+            <Checkbox
+              key={interest}
+              name="interests"
+              value={interest}
+              isChecked={preferences.interests.includes(interest)}
+              onChange={handleChange}
+            >
+              {interest}
+            </Checkbox>
+          ))}
+        </HStack>
+        <Text fontWeight="bold" fontSize="lg" mt={4}>
+          Skill Levels
+        </Text>
+        <Divider />
+        {["hunting", "fishing", "camping"].map((skill) => (
+          <Select
+            key={skill}
+            placeholder={`Select ${skill} skill level`}
+            name={skill}
+            value={preferences.skillLevels[skill]}
+            onChange={(e) =>
+              setPreferences((prev) => ({
+                ...prev,
+                skillLevels: { ...prev.skillLevels, [skill]: e.target.value },
+              }))
+            }
+          >
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </Select>
+        ))}
+        <Text fontWeight="bold" fontSize="lg" mt={4}>
+          Notifications
+        </Text>
+        <Divider />
+        {["specialEvents", "discounts", "updates"].map((notification) => (
+          <Checkbox
+            key={notification}
+            name={notification}
+            isChecked={preferences.notifications[notification]}
+            onChange={handleChange}
+          >
+            {notification.replace(/([A-Z])/g, " $1")}
+          </Checkbox>
+        ))}
+        <Button colorScheme="green" onClick={handleSubmit} width="full" mt={4}>
+          Save Preferences
+        </Button>
+      </VStack>
+    </Box>
   );
 }
