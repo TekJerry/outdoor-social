@@ -11,17 +11,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const handleFriendClick = async (friendId) => {
-    try {
-      await axios.get(`https://outdoor-social.onrender.com/api/users/${friendId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      navigate(`/user_profile/${friendId}`);
-    } catch (error) {
-      console.error("Error fetching friend data:", error);
-    }
+  const handleFriendClick = (friendId) => {
+    navigate(`/user-profile/${friendId}`); // Navigate without Axios call
   };
 
   useEffect(() => {
